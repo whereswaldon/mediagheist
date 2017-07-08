@@ -1,17 +1,17 @@
 # mediagheist
 
-Currently, this repo is for scripts that I wrote to manage my media files. I wan
-ted to expose information about the artist and album for music files without usi
-ng some kind of restrictive naming convention. What I came up with works like th
-is:
+Currently, this repo is for scripts that I wrote to manage my media files. I 
+wanted to expose information about the artist and album for music files without 
+using some kind of restrictive naming convention. What I came up with works 
+like this:
 
 - All music files live in `~/Music/flat`
 - Each artist and album has a directory in `~/Music/albums` or `~/Music/artists`
-  - Within a given artist's or album's directory is a symbolic link to each musi
-c file belonging to that artist.
+  - Within a given artist's or album's directory is a symbolic link to each 
+music file belonging to that artist.
 
-This has the benefit that all of the music files only need to exist in one place
-, but can be viewed in the filesystem through multiple hierarchies.
+This has the benefit that all of the music files only need to exist in one 
+place, but can be viewed in the filesystem through multiple hierarchies.
 
 ## Drawbacks
 
