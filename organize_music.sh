@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! which ffprobe > /dev/null 2>&1; then
 	echo "Missing dependency: ffprobe (part of ffmpeg)"
@@ -54,7 +54,6 @@ for file in "$1"/*.mp3; do
 	fi
 	if ! mv "$file" "$final_path"; then
 		echo "Unable to move $file"
-		exit 1
 	fi
 	if ! ln -s "$final_path" "$curr_album_dir/$detox_file"; then
 		echo "Unable to link $file"
@@ -63,4 +62,3 @@ for file in "$1"/*.mp3; do
 		echo "Unable to link $file"
 	fi
 done
-echo "To see your new music library, run `tree $HOME/Music | less`"
