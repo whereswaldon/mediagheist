@@ -30,12 +30,21 @@ elif ! mkdir -p "$ARTISTDIR"; then
 	echo "Unable to create $ARTISTDIR"
 	exit 1
 fi
-for file in "$1"/*.mp3; do
+for file in "$1"/*; do
 	detox_file=$(basename "$file" | inline-detox)
 	final_path="$FLATDIR/$detox_file"
-	metadata=$(ffprobe "$file" -print_format json -show_format 2> /dev/null)
-        album=$(echo "$metadata" | jq '.format.tags.album' | inline-detox)
-        artist=$(echo "$metadata" | jq '.format.tags.artist' | inline-detox)
+	metadata=$(ffprobe "$file" -print_format json -show_format -show_streams 2> /dev/null)
+	format=$(echo "$metadata" | jq '.format.format_name' | tr -d '"')
+	if [[ "$format" == "mp3" ]]; then
+            album=$(echo "$metadata" | jq '.format.tags.album' | inline-detox)
+            artist=$(echo "$metadata" | jq '.format.tags.artist' | inline-detox)
+	elif [[ "$format" == "ogg" ]]; then
+            album=$(echo "$metadata" | jq '.streams[].tags.ALBUM' | head -1 | inline-detox)
+            artist=$(echo "$metadata" | jq '.streams[].tags.ARTIST' | head -1 | inline-detox)
+	else
+		echo "unknown format, skipping"
+		continue
+	fi
 	curr_album_dir="$ALBUMDIR/$album"
 	curr_artist_dir="$ARTISTDIR/$artist"
 	if [ ! -d "$curr_album_dir" ] && [ ! -L "$curr_album_dir" ]; then
@@ -52,13 +61,13 @@ for file in "$1"/*.mp3; do
         		exit 1
 		fi
 	fi
-	if ! mv "$file" "$final_path"; then
+	if [ ! -f "$final_path" ] && ! mv "$file" "$final_path"; then
 		echo "Unable to move $file"
 	fi
-	if ! ln -s "$final_path" "$curr_album_dir/$detox_file"; then
+	if [ ! -L "$curr_album_dir/$detox_file" ] && ! ln -s "$final_path" "$curr_album_dir/$detox_file"; then
 		echo "Unable to link $file"
 	fi
-	if ! ln -s "$final_path" "$curr_artist_dir/$detox_file"; then
+	if [ ! -L "$curr_artist_dir/$detox_file" ] && ! ln -s "$final_path" "$curr_artist_dir/$detox_file"; then
 		echo "Unable to link $file"
 	fi
 done
