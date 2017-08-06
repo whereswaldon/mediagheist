@@ -15,12 +15,12 @@ place, but can be viewed in the filesystem through multiple hierarchies.
 
 ## Drawbacks
 
-- Only handles MP3 files
+- Only handles MP3 and OGG files
 - Doesn't handle all possible metadata for sorting, just artist and album
 
 ## Plans
 
-- Support multiple media containers (OGG, etc...)
+- Support more media containers
 - Create scripts to do similar tasks for other media types
 
 ## Install
