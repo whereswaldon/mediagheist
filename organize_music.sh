@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#: A media management script for file-system-based organization
+#: Author: Chris Waldon
+#: Usage: Organize_music.sh <dir-containing-music>
+
 if ! which ffprobe > /dev/null 2>&1; then
 	echo "Missing dependency: ffprobe (part of ffmpeg)"
 	exit 1
@@ -17,7 +21,8 @@ if [[ "$#" < 1 ]]; then
 	exit 1
 fi
 MUSICDIR="$HOME/Music"
-FLATDIR="$MUSICDIR/flat"
+FLATDIRNAME="flat"
+FLATDIR="$MUSICDIR/$FLATDIRNAME"
 ALBUMDIR="$MUSICDIR/albums"
 ARTISTDIR="$MUSICDIR/artists"
 if ! mkdir -p "$FLATDIR"; then
@@ -64,10 +69,10 @@ for file in "$1"/*; do
 	if [ ! -f "$final_path" ] && ! mv "$file" "$final_path"; then
 		echo "Unable to move $file"
 	fi
-	if [ ! -L "$curr_album_dir/$detox_file" ] && ! ln -s "$final_path" "$curr_album_dir/$detox_file"; then
+	if [ ! -L "$curr_album_dir/$detox_file" ] && ! ln -s "../../$FLATDIRNAME/$detox_file" "$curr_album_dir/$detox_file"; then
 		echo "Unable to link $file"
 	fi
-	if [ ! -L "$curr_artist_dir/$detox_file" ] && ! ln -s "$final_path" "$curr_artist_dir/$detox_file"; then
+	if [ ! -L "$curr_artist_dir/$detox_file" ] && ! ln -s "../../$FLATDIRNAME/$detox_file" "$curr_artist_dir/$detox_file"; then
 		echo "Unable to link $file"
 	fi
 done
